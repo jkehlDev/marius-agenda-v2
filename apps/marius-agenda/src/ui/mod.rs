@@ -1,4 +1,4 @@
-//! GTK wizard — 5 steps (v1 parity).
+//! GTK home + 5-step wizard.
 
 mod date_field;
 mod generate;

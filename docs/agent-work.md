@@ -4,8 +4,8 @@ Audience: **AI agents** maintaining this repo. Not user-facing docs.
 
 ## Product target
 
-- Port of [marius-agenda](https://github.com/jkehlDev/marius-agenda) v1: same JSON config, same HTML/CSS print layout, 5-step wizard.
-- **No** Electron/Tauri. **GTK 4 + Libadwaita** on Linux.
+- School agenda generator: JSON config, HTML/CSS print layout, 5-step wizard, `.marius` projects.
+- **GTK 4 + Libadwaita** on Linux (no embedded Chromium).
 - PDF: **WebKitGTK 6** only (`agenda-pdf` → `webkit.rs`).
 - Default config: school year **2026-2027** only (no legacy migration).
 
@@ -68,18 +68,18 @@ Audience: **AI agents** maintaining this repo. Not user-facing docs.
 | Refresh step body conditionnel | done | `last_filled_step` + `force_rebuild` |
 | Bannière génération PDF | done | `AdwBanner` |
 | `.desktop` dans deb | done | `marius-agenda.desktop` |
-| Duplex help v1 (liste numérotée) | done | step 5 |
+| Duplex help (liste numérotée) | done | step 5 |
 | GtkFileDialog déjà pour images | done | pre-existing |
-| Polish graphique v1 (clamp, grilles, previews) | done | `ui/layout.rs`, `ui/marius.css`, `--gui-screenshot-tour` |
+| Polish graphique wizard (clamp, grilles, previews) | done | `ui/layout.rs`, `ui/marius.css`, `--gui-screenshot-tour` |
 | Packaging VM propre `dpkg -i` | in progress | `package-deb.sh`, `verify-deb.sh`, deps WebKit explicites ; `.desktop` `%f` + MIME `.marius` |
-| Snap Store | in progress | `core24` + `gnome` + `webkitgtk-6-gnome-2404` ; WebKit PDF : `WEBKIT_DISABLE_DMABUF_RENDERER` + `GSK_RENDERER=cairo` en snap |
+| Snap Store | in progress | `core24` + `gnome` + `webkitgtk-6-gnome-2404` ; WebKit PDF : `WEBKIT_DISABLE_DMABUF_RENDERER` + `GSK_RENDERER=cairo` ; `summary`/`description` = listing store |
 | README utilisateur dans paquet | done | `packaging/debian/README.Debian` |
 
 ## Progress phases (legacy)
 
 | Phase | Status | Notes |
 |-------|--------|-------|
-| A–D Core + wizard parity | done | |
+| A–D Core + wizard | done | |
 | E Packaging | in progress | `.desktop`, `$auto` deps |
 | F Release polish | pending | user README |
 

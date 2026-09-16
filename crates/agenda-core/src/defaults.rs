@@ -41,14 +41,14 @@ fn empty_illustrations() -> AgendaIllustrations {
     }
 }
 
-/// New GUI project: same calendar preset as v1, no bundled illustration paths.
+/// New GUI project: default school-year preset, no bundled illustration paths.
 pub fn create_blank_project_config() -> AgendaConfig {
     let mut config = create_default_config();
     config.illustrations = empty_illustrations();
     config
 }
 
-/// Default preset: school year 2026-2027 (same dates as marius-agenda v1), no bundled illustrations.
+/// Default preset: school year 2026-2027, no bundled illustrations.
 pub fn create_default_config() -> AgendaConfig {
     AgendaConfig {
         version: 1,

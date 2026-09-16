@@ -57,7 +57,7 @@ fn flatten_on_white(img: DynamicImage) -> DynamicImage {
 }
 
 fn normalize_contrast(img: DynamicImage) -> DynamicImage {
-    // Approximate Sharp: .normalize() + .linear(1.35, -(128 * 0.35))
+    // Tone curve: normalize + linear(1.35, -(128 * 0.35))
     let gray = img.to_luma8();
     let mut min = 255u8;
     let mut max = 0u8;

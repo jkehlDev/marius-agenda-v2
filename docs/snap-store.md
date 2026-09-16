@@ -11,6 +11,7 @@ Approche technique (GTK/WebKit, pièges) : **`docs/snap-packaging-guide.md`**.
 - Build recommandé : **LXD** (`snap install lxd` — pas besoin de `lxd init` si déjà configuré).
 - Base snap : **core24** + extension `gnome` ; WebKitGTK 6 via content snap `webkitgtk-6-gnome-2404` (voir guide packaging).
 - Vignette **Snap Store** : `icon: packaging/icons/marius-agenda-256.png` dans `snap/snapcraft.yaml` (distinct du `Icon=` du `.desktop`).
+- **Summary / description** : tenir `summary` et `description` dans `snap/snapcraft.yaml` alignés avec le listing snapcraft.io (source de vérité au prochain `snapcraft upload` ; le dashboard peut aussi être édité à la main — éviter la divergence).
 
 ## Build
 

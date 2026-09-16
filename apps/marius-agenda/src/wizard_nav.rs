@@ -25,7 +25,7 @@ pub fn prev_click_outcome(current_step: usize) -> usize {
     current_step.saturating_sub(1)
 }
 
-/// v1 parity: pills only allow jumping to steps already reached (index <= current).
+/// Pills only allow jumping to steps already reached (index <= current).
 pub fn can_goto_step(current_step: usize, target: usize) -> bool {
     target < WIZARD_STEP_COUNT && target <= current_step
 }
@@ -72,7 +72,7 @@ mod tests {
     }
 
     #[test]
-    fn default_config_walk_matches_v1_flow() {
+    fn default_config_advances_through_wizard() {
         use agenda_core::{can_advance_wizard_step, create_default_config};
         let config = create_default_config();
         for step in 0..4 {

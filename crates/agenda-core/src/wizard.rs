@@ -1,4 +1,4 @@
-//! Wizard step validation (parity with marius-agenda v1 React `validateWizardStep`).
+//! Wizard step validation (`validate_wizard_step`).
 
 use crate::calendar::parse_iso_date;
 use crate::config::AgendaConfig;
@@ -82,7 +82,7 @@ pub fn can_advance_wizard_step(step: usize, config: &AgendaConfig) -> bool {
     validate_wizard_step(step, config).is_empty()
 }
 
-/// GTK / UI: one line per blocker (v1 wizard-errors list).
+/// GTK / UI: one line per blocker (bulleted list).
 pub fn format_wizard_errors(errors: &[String]) -> String {
     errors
         .iter()

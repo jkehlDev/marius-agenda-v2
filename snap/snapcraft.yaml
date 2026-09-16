@@ -6,10 +6,29 @@ icon: packaging/icons/marius-agenda-256.png
 base: core24
 # Keep in sync with [workspace.package] version in root Cargo.toml
 version: '0.1.0'
-summary: Générateur d'agenda scolaire (PDF livret)
+summary: Générateur d'agenda scolaire en PDF prêt à imprimer (page à page ou livret)
 description: |
-  Wizard GTK pour configurer et générer un agenda scolaire en PDF
-  (page à page ou livret imposé), même rendu que marius-agenda v1.
+  Marius Agenda aide à préparer un agenda scolaire personnalisé, prêt à imprimer
+  ou à partager en PDF.
+
+  Fonctionnalités :
+  • Assistant en plusieurs étapes : année scolaire, vacances, jours de cours,
+    illustrations
+  • Génération PDF par période scolaire
+  • Mode page à page ou livret imposé (A4 recto-verso, pliage au milieu)
+  • Projets enregistrés au format .marius (fichier unique à archiver ou échanger)
+  • Interface GTK native (GNOME / Ubuntu), sans navigateur embarqué
+
+  Utilisation :
+  1. Lance l'application depuis le menu
+  2. Crée un nouveau projet ou ouvre un fichier .marius
+  3. Complète l'assistant, choisis un dossier de sortie
+  4. Génère les PDF pour chaque période
+
+  Fonctionne hors ligne. Les PDF sont enregistrés dans le dossier que tu choisis.
+
+  Code source et signalement de bugs :
+  https://github.com/jkehlDev/marius-agenda-v2
 
 grade: stable
 confinement: strict
