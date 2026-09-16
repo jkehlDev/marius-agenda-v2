@@ -96,4 +96,4 @@ Assets : `assets/` (vide — illustrations par projet) et `fonts/` (polices emba
 
 ## Licence
 
-[ISC](LICENSE) — voir aussi les métadonnées du workspace dans `Cargo.toml`.
+[GNU GPL v3 ou ultérieure](LICENSE) (`GPL-3.0-or-later` dans `Cargo.toml`).

@@ -32,7 +32,7 @@ description: |
 
 grade: stable
 confinement: strict
-license: ISC
+license: GPL-3.0-or-later
 contact: https://github.com/jkehlDev/marius-agenda-v2/issues
 issues: https://github.com/jkehlDev/marius-agenda-v2/issues
 website: https://github.com/jkehlDev/marius-agenda-v2
