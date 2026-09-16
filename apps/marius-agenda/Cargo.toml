@@ -1,0 +1,68 @@
+[package]
+name = "marius-agenda"
+description = "Générateur d'agenda scolaire (interface GTK, PDF livret)"
+homepage = "https://github.com/jkehlDev/marius-agenda-v2"
+repository.workspace = true
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "marius-agenda"
+path = "src/main.rs"
+
+[dependencies]
+agenda-core = { path = "../../crates/agenda-core" }
+agenda-pipeline = { path = "../../crates/agenda-pipeline" }
+clap = { version = "4", features = ["derive"] }
+
+[dev-dependencies]
+agenda-core = { path = "../../crates/agenda-core" }
+agenda-pdf = { path = "../../crates/agenda-pdf" }
+
+[features]
+default = []
+gtk = ["dep:gtk", "dep:libadwaita", "dep:agenda-images"]
+
+# gtk-rs convention: import as `gtk::` while the package name is gtk4
+[dependencies.gtk]
+package = "gtk4"
+version = "0.9"
+optional = true
+features = ["v4_10"]
+
+[dependencies.agenda-images]
+path = "../../crates/agenda-images"
+optional = true
+
+[dependencies.libadwaita]
+version = "0.7"
+optional = true
+features = ["v1_4"]
+
+# `cargo install cargo-deb` then: ./scripts/package-deb.sh
+[package.metadata.deb]
+name = "marius-agenda"
+section = "education"
+priority = "optional"
+revision = "8"
+maintainer = "jkehlDev"
+copyright = "Copyright 2026 jkehlDev"
+extended-description-file = "packaging/debian/extended-description"
+changelog = "../../packaging/debian/changelog"
+maintainer-scripts = "../../packaging/debian/scripts"
+features = ["gtk"]
+# `$auto` = shlibdeps (libwebkitgtk-6.0-4 on Ubuntu, names vary by distro).
+depends = "$auto"
+recommends = "xdg-desktop-portal-gtk"
+assets = [
+  ["target/release/marius-agenda", "usr/bin/marius-agenda", "755"],
+  ["marius-agenda.desktop", "usr/share/applications/marius-agenda.desktop", "644"],
+  ["../../packaging/marius-agenda.xml", "usr/share/mime/packages/marius-agenda.xml", "644"],
+  ["../../packaging/icons/marius-agenda-48.png", "usr/share/icons/hicolor/48x48/apps/marius-agenda.png", "644"],
+  ["../../packaging/icons/marius-agenda-128.png", "usr/share/icons/hicolor/128x128/apps/marius-agenda.png", "644"],
+  ["../../packaging/icons/marius-agenda-256.png", "usr/share/icons/hicolor/256x256/apps/marius-agenda.png", "644"],
+  ["../../assets/*", "usr/share/marius-agenda/assets/", "644"],
+  ["../../fonts/*", "usr/share/marius-agenda/fonts/", "644"],
+  ["../../packaging/debian/README.Debian", "usr/share/doc/marius-agenda/README.Debian", "644"],
+]

@@ -1,0 +1,10 @@
+Marius Agenda permet de configurer un agenda scolaire (année, vacances,
+jours de classe, illustrations) et de générer des PDF par période, en
+page à page ou en livret imposé.
+
+Les projets sont enregistrés au format .marius (archive unique) depuis
+l’interface graphique GTK 4 / Libadwaita. La génération PDF utilise
+WebKitGTK 6 (moteur système, pas de navigateur embarqué).
+
+Après installation : lancer « Marius Agenda » depuis le menu
+applications, ou la commande marius-agenda --gui.

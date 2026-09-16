@@ -1,0 +1,12 @@
+[package]
+name = "agenda-pdf"
+description = "HTML → PDF via WebKitGTK"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+thiserror.workspace = true
+tempfile = "3"
+gtk = { package = "gtk4", version = "0.9" }
+webkit6 = "0.4"

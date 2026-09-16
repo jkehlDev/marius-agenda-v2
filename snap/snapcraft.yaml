@@ -1,0 +1,114 @@
+# Build: ./scripts/package-snap.sh
+# WebKitGTK 6: content snap webkitgtk-6-gnome-2404 (see docs/snap-packaging-guide.md)
+name: marius-agenda
+title: Marius Agenda
+icon: packaging/icons/marius-agenda-256.png
+base: core24
+# Keep in sync with [workspace.package] version in root Cargo.toml
+version: '0.1.0'
+summary: Générateur d'agenda scolaire (PDF livret)
+description: |
+  Wizard GTK pour configurer et générer un agenda scolaire en PDF
+  (page à page ou livret imposé), même rendu que marius-agenda v1.
+
+grade: stable
+confinement: strict
+license: ISC
+contact: https://github.com/jkehlDev/marius-agenda-v2/issues
+issues: https://github.com/jkehlDev/marius-agenda-v2/issues
+website: https://github.com/jkehlDev/marius-agenda-v2
+source-code: https://github.com/jkehlDev/marius-agenda-v2
+
+platforms:
+  amd64:
+    build-on: amd64
+
+layout:
+  /usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/webkitgtk-6.0:
+    bind: $SNAP/webkitgtk-platform/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/webkitgtk-6.0
+
+slots:
+  marius-agenda:
+    interface: dbus
+    bus: session
+    name: com.jkehldev.mariusagenda
+
+plugs:
+  webkitgtk-6-gnome-2404:
+    interface: content
+    target: $SNAP/webkitgtk-platform
+    default-provider: webkitgtk-6-gnome-2404
+
+apps:
+  marius-agenda:
+    command: usr/bin/marius-agenda
+    extensions: [gnome]
+    desktop: meta/gui/marius-agenda.desktop
+    plugs:
+      - home
+      - removable-media
+      - network
+      - network-status
+      - webkitgtk-6-gnome-2404
+    environment:
+      # Do not set PATH here — gnome command-chain needs core24 /usr/bin (dirname, snapctl, …).
+      LD_LIBRARY_PATH: $SNAP/webkitgtk-platform/usr/lib:$SNAP/webkitgtk-platform/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
+      # WebKit print/WebView: GBM EGL often fails confined (see docs/snap-packaging-guide.md).
+      WEBKIT_DISABLE_DMABUF_RENDERER: "1"
+      GSK_RENDERER: cairo
+
+parts:
+  marius-agenda:
+    plugin: nil
+    source: ..
+    source-type: local
+    build-snaps:
+      - webkitgtk-6-gnome-2404-sdk
+    build-environment:
+      - PKG_CONFIG_PATH: /snap/webkitgtk-6-gnome-2404-sdk/current/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}
+      - LD_LIBRARY_PATH: /snap/webkitgtk-6-gnome-2404-sdk/current/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
+      - PATH: /snap/webkitgtk-6-gnome-2404-sdk/current/usr/bin${PATH:+:$PATH}
+    override-build: |
+      set -eu
+      cd "${CRAFT_PROJECT_DIR}"
+      test -f Cargo.toml || { echo "missing Cargo.toml in ${CRAFT_PROJECT_DIR}"; ls -la; exit 1; }
+      export CARGO_TARGET_DIR="${CRAFT_PART_BUILD}/target"
+
+      need_rustup=1
+      if command -v rustc >/dev/null; then
+        ver="$(rustc --version | awk '{print $2}')"
+        major="${ver%%.*}"
+        minor="${ver#*.}"; minor="${minor%%.*}"
+        if [ "$major" -gt 1 ] || { [ "$major" -eq 1 ] && [ "$minor" -ge 85 ]; }; then
+          need_rustup=0
+        fi
+      fi
+      if [ "$need_rustup" -eq 1 ]; then
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path
+        export PATH="${HOME}/.cargo/bin:${PATH}"
+      fi
+
+      cargo build -p marius-agenda --release --features gtk
+
+      install -Dm755 "${CARGO_TARGET_DIR}/release/marius-agenda" \
+        "${CRAFT_PART_INSTALL}/usr/bin/marius-agenda"
+      mkdir -p "${CRAFT_PART_INSTALL}/usr/share/marius-agenda"
+      cp -a assets fonts "${CRAFT_PART_INSTALL}/usr/share/marius-agenda/"
+      install -Dm644 packaging/marius-agenda.xml \
+        "${CRAFT_PART_INSTALL}/usr/share/mime/packages/marius-agenda.xml"
+      if command -v update-mime-database >/dev/null; then
+        update-mime-database "${CRAFT_PART_INSTALL}/usr/share/mime" || true
+      fi
+      mkdir -p "${CRAFT_PART_INSTALL}/meta/gui"
+      install -Dm644 "${CRAFT_PROJECT_DIR}/snap/gui/marius-agenda.desktop" \
+        "${CRAFT_PART_INSTALL}/meta/gui/marius-agenda.desktop"
+      install -Dm644 packaging/icons/marius-agenda-256.png \
+        "${CRAFT_PART_INSTALL}/meta/gui/marius-agenda.png"
+
+    build-packages:
+      - curl
+      - python3
+      - pkg-config
+      - libgtk-4-dev
+      - libadwaita-1-dev
+      - libwebkitgtk-6.0-dev

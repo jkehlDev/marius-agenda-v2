@@ -1,0 +1,13 @@
+[package]
+name = "agenda-render"
+description = "HTML/CSS generation for Marius Agenda"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+agenda-core = { path = "../agenda-core" }
+base64 = "0.22"
+
+[dev-dependencies]
+agenda-core = { path = "../agenda-core" }

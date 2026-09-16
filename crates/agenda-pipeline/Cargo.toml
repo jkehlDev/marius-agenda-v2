@@ -1,0 +1,19 @@
+[package]
+name = "agenda-pipeline"
+description = "Generate HTML and export PDFs"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+agenda-core = { path = "../agenda-core" }
+agenda-images = { path = "../agenda-images" }
+agenda-pdf = { path = "../agenda-pdf" }
+agenda-render = { path = "../agenda-render" }
+tempfile = "3"
+thiserror.workspace = true
+serde_json.workspace = true
+
+[dev-dependencies]
+agenda-pdf = { path = "../agenda-pdf" }
+tempfile = "3"

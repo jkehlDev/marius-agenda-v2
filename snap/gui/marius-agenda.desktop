@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Marius Agenda
+Comment=Générateur d'agenda scolaire en PDF
+Exec=marius-agenda --gui %f
+Icon=${SNAP}/meta/gui/marius-agenda.png
+Terminal=false
+Categories=Education;Office;
+MimeType=application/x-marius-project;
+Keywords=agenda;scolaire;pdf;livret;école;
+StartupNotify=true
+StartupWMClass=marius-agenda

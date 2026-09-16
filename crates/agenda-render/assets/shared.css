@@ -1,0 +1,741 @@
+:root {
+  --ink: #111;
+  --line: #222;
+  --guide: #888;
+  --surface: #fff;
+  --margin-line: #111;
+  --font-ui: "DejaVu Sans", "Liberation Sans", Arial, Helvetica, sans-serif;
+  --font-script: "Marck Script", "Segoe Script", cursive;
+  --font-mono: "Courier New", Courier, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  color: var(--ink);
+  background: var(--surface);
+  font-family: var(--font-mono);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+@page {
+  margin: 8mm;
+}
+
+@page a5-portrait {
+  size: A5 portrait;
+  margin: 7mm;
+}
+
+@page a4-portrait {
+  size: A4 portrait;
+  margin: 8mm;
+}
+
+@page a4-landscape {
+  size: A4 landscape;
+  margin: 8mm;
+}
+
+.page {
+  page-break-after: always;
+  break-after: page;
+  position: relative;
+  overflow: hidden;
+}
+
+.page:last-child {
+  page-break-after: auto;
+  break-after: auto;
+}
+
+.page-a5 {
+  width: 148mm;
+  min-height: 210mm;
+  height: 210mm;
+  padding: 6mm;
+  page: a5-portrait;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Discreet folio for print / booklet assembly */
+.page-folio {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2.6mm;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 6.5pt;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: #9a9a9a;
+  line-height: 1;
+  pointer-events: none;
+  z-index: 6;
+  user-select: none;
+}
+
+/* Booklet gutter (+5mm): odd/recto → right, even/verso → left */
+.page-a5.is-recto {
+  padding-left: 6mm;
+  padding-right: 11mm;
+}
+
+.page-a5.is-verso {
+  padding-left: 11mm;
+  padding-right: 6mm;
+}
+
+.page-a4-portrait {
+  width: 210mm;
+  min-height: 297mm;
+  height: 297mm;
+  padding: 8mm;
+  page: a4-portrait;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-a4-landscape {
+  width: 297mm;
+  min-height: 210mm;
+  height: 210mm;
+  padding: 8mm;
+  page: a4-landscape;
+}
+
+@media screen {
+  body {
+    background: #ddd;
+    padding: 12px;
+  }
+  .page {
+    background: #fff;
+    margin: 0 auto 16px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.25);
+  }
+}
+
+/* ---- Seyès ruling ---- */
+.seyes {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  border: 1.5px solid var(--ink);
+  border-radius: 4mm;
+  background-color: #fff;
+  overflow: hidden;
+  /* 2mm light lines; every 4th (8mm) is the baseline */
+  background-image:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 1.95mm,
+      var(--guide) 1.95mm,
+      var(--guide) 2mm
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 7.85mm,
+      var(--line) 7.85mm,
+      var(--line) 8mm
+    );
+  background-size: 100% 8mm, 100% 8mm;
+  background-position: 0 0, 0 0;
+}
+
+.seyes::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 36mm;
+  width: 1.5px;
+  background: var(--margin-line);
+  z-index: 1;
+}
+
+.seyes-tall {
+  min-height: 0;
+}
+
+/* ---- Header / frieze ---- */
+.day-header {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5mm;
+  border-bottom: 1.5px solid var(--ink);
+  padding-bottom: 3mm;
+  margin-bottom: 4mm;
+}
+
+.day-header-top {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4mm;
+  align-items: end;
+}
+
+.day-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 1mm;
+}
+
+.day-meta .weekday {
+  font-family: var(--font-script);
+  font-size: 22pt;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0.01em;
+  line-height: 1;
+}
+
+.day-meta .month-line {
+  font-size: 9pt;
+  color: var(--ink);
+  letter-spacing: 0.02em;
+}
+
+.day-number {
+  font-size: 26pt;
+  font-weight: 700;
+  line-height: 1;
+  border: 2px solid var(--ink);
+  border-radius: 3mm;
+  min-width: 16mm;
+  height: 16mm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  /* Courier digits sit optically high */
+  padding-top: 0.8mm;
+  box-sizing: border-box;
+}
+
+.week-frieze {
+  display: flex;
+  width: 100%;
+  height: 7.5mm;
+  border: 1.2px solid var(--ink);
+  border-radius: 2.5mm;
+  overflow: hidden;
+}
+
+.week-frieze .cell {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid var(--ink);
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.week-frieze .cell:last-child {
+  border-right: none;
+}
+
+.week-frieze .cell-label {
+  display: block;
+  font-family: var(--font-ui);
+  font-size: 5.8pt;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  letter-spacing: 0;
+  text-align: center;
+  /* Capitals have no descenders: slight optical nudge down */
+  transform: translateY(0.6px);
+}
+
+.week-frieze .cell.is-today {
+  background: #111;
+  color: #fff;
+}
+
+.week-frieze .cell.is-off .cell-label {
+  font-weight: 400;
+}
+
+.homework-label {
+  font-family: var(--font-script);
+  font-size: 14pt;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  margin-bottom: 2mm;
+  flex-shrink: 0;
+}
+
+.day-body {
+  display: flex;
+  flex-direction: column;
+  /* Remaining space above the drawing half */
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+.page-day .day-body .seyes {
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+/* Drawing zone (~40% of page height) */
+.day-draw {
+  flex: 0 0 40%;
+  min-height: 0;
+  margin-top: 2.5mm;
+  background: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Weekday mascot — on fold/gutter side (recto=right, verso=left) */
+.day-draw-mascot {
+  position: absolute;
+  bottom: 0;
+  max-width: 50%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.page-a5.is-recto .day-draw-mascot {
+  right: 0;
+  left: auto;
+  object-position: bottom right;
+}
+
+.page-a5.is-verso .day-draw-mascot {
+  left: 0;
+  right: auto;
+  object-position: bottom left;
+}
+
+/* Tear/fold corner — opposite the fold (recto=left, verso=right) */
+.page-day .day-corner {
+  position: absolute;
+  bottom: 4mm;
+  width: 12mm;
+  height: 12mm;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.page-a5.is-recto .day-corner {
+  left: 4mm;
+  right: auto;
+}
+
+.page-a5.is-verso .day-corner {
+  right: 4mm;
+  left: auto;
+}
+
+/* Dashed cut guide (hypotenuse) */
+.page-day .day-corner-fold {
+  position: absolute;
+  inset: 0;
+  background: none;
+}
+
+.page-a5.is-recto .day-corner-fold::before {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 141.42%;
+  height: 0;
+  border-top: 1.3px dashed var(--ink);
+  transform: rotate(45deg);
+  transform-origin: right bottom;
+}
+
+.page-a5.is-verso .day-corner-fold::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 141.42%;
+  height: 0;
+  border-top: 1.3px dashed var(--ink);
+  transform: rotate(-45deg);
+  transform-origin: left bottom;
+}
+
+/* Small outline triangle tip under the cut line */
+.page-a5.is-recto .day-corner-fold::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 5mm;
+  height: 5mm;
+  box-sizing: border-box;
+  background:
+    linear-gradient(
+      to top right,
+      transparent calc(50% - 0.35mm),
+      var(--ink) calc(50% - 0.35mm),
+      var(--ink) calc(50% + 0.35mm),
+      transparent calc(50% + 0.35mm)
+    );
+  border-left: 1.2px solid var(--ink);
+  border-bottom: 1.2px solid var(--ink);
+}
+
+.page-a5.is-verso .day-corner-fold::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 5mm;
+  height: 5mm;
+  box-sizing: border-box;
+  background:
+    linear-gradient(
+      to top left,
+      transparent calc(50% - 0.35mm),
+      var(--ink) calc(50% - 0.35mm),
+      var(--ink) calc(50% + 0.35mm),
+      transparent calc(50% + 0.35mm)
+    );
+  border-right: 1.2px solid var(--ink);
+  border-bottom: 1.2px solid var(--ink);
+}
+
+/* Scissors mark mid-cut — breaks the dashed guide */
+.page-day .day-corner-scissors {
+  position: absolute;
+  z-index: 3;
+  width: 4.4mm;
+  height: 4.4mm;
+  display: grid;
+  place-items: center;
+  color: var(--ink);
+  background: #fff;
+  border-radius: 50%;
+  box-sizing: border-box;
+  padding: 0.35mm;
+}
+
+.page-a5.is-recto .day-corner-scissors {
+  left: 50%;
+  bottom: 50%;
+  transform: translate(-50%, 50%) rotate(45deg);
+}
+
+.page-a5.is-verso .day-corner-scissors {
+  right: 50%;
+  bottom: 50%;
+  transform: translate(50%, 50%) rotate(-45deg);
+}
+
+.page-day .day-corner-scissors svg {
+  display: block;
+}
+
+/* ---- Cover ---- */
+.cover {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  /* Keep .page-a5 A5 dimensions */
+  overflow: hidden;
+  gap: 3mm;
+}
+
+.cover-top {
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.cover-title {
+  font-family: var(--font-script);
+  font-size: 28pt;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  margin: 0 0 2mm;
+  line-height: 1.1;
+}
+
+.cover-subtitle {
+  font-size: 10pt;
+  color: var(--ink);
+  margin: 0;
+}
+
+.cover-period {
+  margin-top: 4mm;
+  font-size: 11pt;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.cover-coloring {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.cover-coloring-img {
+  width: auto;
+  height: auto;
+  max-width: 78%;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: center center;
+  display: block;
+}
+
+.cover-fields {
+  border: 2px solid var(--ink);
+  border-radius: 4mm;
+  padding: 6mm;
+  display: flex;
+  flex-direction: column;
+  gap: 8mm;
+  flex-shrink: 0;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 2mm;
+}
+
+.field label {
+  font-family: var(--font-script);
+  font-size: 14pt;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0.02em;
+}
+
+.field .write-line {
+  border-bottom: 1.5px solid var(--ink);
+  height: 10mm;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 1.95mm,
+    var(--guide) 1.95mm,
+    var(--guide) 2mm
+  );
+  background-size: 100% 8mm;
+}
+
+.cover-footer {
+  font-size: 8pt;
+  color: var(--ink);
+  text-align: center;
+}
+
+/* ---- Activities (2 pages: Lun–Mer / Jeu–Ven) ---- */
+.activities {
+  display: flex;
+  flex-direction: column;
+  /* Keep .page-a5 A5 lock (210×148mm); only constrain inner flex children */
+  overflow: hidden;
+}
+
+.activities-header {
+  flex-shrink: 0;
+  margin-bottom: 2.5mm;
+  padding-bottom: 1.5mm;
+  border-bottom: 1.5px solid var(--ink);
+}
+
+.activities-header h1 {
+  margin: 0;
+  font-family: var(--font-script);
+  font-size: 17pt;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  line-height: 1.15;
+}
+
+.activities-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 6mm;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* Page 1: same 6mm gaps as page 2; blocks aligned to the top */
+.activities:not(.activities-with-art) .activities-grid {
+  justify-content: flex-start;
+}
+
+/* Page 2: same block size/gap; leftover space goes to art */
+.activities-with-art .activities-grid {
+  flex: 0 0 auto;
+}
+
+.activity-col {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  min-height: 0;
+  height: auto;
+  border: 1.5px solid var(--ink);
+  border-radius: 3mm;
+  overflow: hidden;
+  background: #fff;
+}
+
+.activity-col .col-title {
+  flex: 0 0 7mm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-family: var(--font-script);
+  font-size: 12pt;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+  height: 7mm;
+  padding: 0 2mm;
+  border-bottom: 1.5px solid var(--ink);
+  background: #fff;
+  color: var(--ink);
+}
+
+.activity-col .col-title.is-wed {
+  text-decoration: underline;
+  font-size: 12.5pt;
+}
+
+/* Same day-block writing area on both activities pages (~4 baselines) */
+.activity-col .seyes {
+  border: none;
+  border-radius: 0;
+  flex: none;
+  align-self: stretch;
+  height: 32mm;
+  min-height: 32mm;
+}
+
+/* Narrower margin line inside activity cards */
+.activity-col .seyes::before {
+  left: 12mm;
+}
+
+.activities-art {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin-top: 2mm;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.activities-art-img {
+  /* 20% smaller than previous 70% width cap */
+  max-width: 56%;
+  max-height: 80%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  object-position: bottom center;
+  pointer-events: none;
+}
+
+/* ---- Vacations calendar page ---- */
+.vacations {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.vacations h1 {
+  margin: 0 0 2mm;
+  font-family: var(--font-script);
+  font-size: 20pt;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0.02em;
+}
+
+.vacations .zone {
+  font-size: 9pt;
+  color: var(--ink);
+  margin-bottom: 5mm;
+}
+
+.vacations table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 8.5pt;
+  border: 1.2px solid var(--ink);
+  border-radius: 3mm;
+  overflow: hidden;
+}
+
+.vacations th,
+.vacations td {
+  border-right: 1.2px solid var(--ink);
+  border-bottom: 1.2px solid var(--ink);
+  padding: 2.5mm 2mm;
+  text-align: left;
+  vertical-align: top;
+}
+
+.vacations th:last-child,
+.vacations td:last-child {
+  border-right: none;
+}
+
+.vacations tr:last-child td {
+  border-bottom: none;
+}
+
+.vacations th {
+  background: #fff;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-size: 7.5pt;
+}
+
+.vacations .cities {
+  margin-top: 5mm;
+  font-size: 8pt;
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+.vacations .note {
+  margin-top: auto;
+  font-size: 7.5pt;
+  color: var(--ink);
+  border-top: 1px solid var(--line);
+  padding-top: 3mm;
+}

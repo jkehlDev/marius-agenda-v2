@@ -1,0 +1,11 @@
+[package]
+name = "agenda-images"
+description = "Illustration pipeline (B&W WebP) for Marius Agenda"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+agenda-core = { path = "../agenda-core" }
+image = { version = "0.25", default-features = false, features = ["png", "jpeg", "webp"] }
+thiserror.workspace = true

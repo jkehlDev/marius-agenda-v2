@@ -1,0 +1,38 @@
+Marius Agenda — installation du paquet .deb
+==========================================
+
+Installation (Ubuntu / Debian récent, amd64)
+--------------------------------------------
+
+Depuis le dossier contenant le fichier .deb :
+
+  sudo apt install ./marius-agenda_*_amd64.deb
+
+Si une ancienne build du paquet est déjà installée :
+
+  sudo apt install --reinstall ./marius-agenda_*_amd64.deb
+
+`apt` installe les dépendances GTK / WebKitGTK automatiquement.
+
+Alternative :
+
+  sudo dpkg -i marius-agenda_*_amd64.deb
+  sudo apt-get install -f
+
+Lancement
+---------
+
+  marius-agenda --gui
+
+Ou via le menu « Marius Agenda » (catégorie Éducation).
+
+Double-clic sur un fichier `.marius` (après installation du paquet et
+mise à jour des bases MIME) ouvre directement le projet.
+
+Désinstallation
+---------------
+
+  sudo apt remove marius-agenda
+
+Les projets .marius et les données utilisateur restent dans votre
+dossier personnel (~/.local/share/marius-agenda).

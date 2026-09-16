@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+  <mime-type type="application/x-marius-project">
+    <comment>Marius Agenda project</comment>
+    <comment xml:lang="fr">Projet Marius Agenda</comment>
+    <glob pattern="*.marius"/>
+    <icon name="marius-agenda"/>
+  </mime-type>
+</mime-info>

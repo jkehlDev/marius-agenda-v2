@@ -1,0 +1,238 @@
+@page {
+  size: A4 landscape;
+  margin: 0;
+}
+
+@page a4-landscape {
+  size: A4 landscape;
+  margin: 0;
+}
+
+@page a5-portrait {
+  size: A4 landscape;
+  margin: 0;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 297mm;
+  background: #fff;
+}
+
+.sheet {
+  width: 297mm;
+  height: 210mm;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  overflow: hidden;
+  background: #fff;
+  break-after: page;
+  page-break-after: always;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.sheet:last-child {
+  break-after: auto;
+  page-break-after: auto;
+}
+
+.sheet-slot {
+  flex: 0 0 148.5mm;
+  width: 148.5mm;
+  height: 210mm;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+  box-sizing: border-box;
+}
+
+/* Nested A5 = content box only, never a PDF page */
+.sheet .page,
+.sheet .page-a5,
+.sheet .page-in-slot {
+  page: auto !important;
+  break-before: avoid !important;
+  break-after: avoid !important;
+  break-inside: avoid !important;
+  page-break-before: avoid !important;
+  page-break-after: avoid !important;
+  page-break-inside: avoid !important;
+  position: absolute !important;
+  top: 0;
+  left: 0;
+  width: 148.5mm !important;
+  height: 210mm !important;
+  min-height: 210mm !important;
+  max-height: 210mm !important;
+  max-width: 148.5mm !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+/*
+ * On the printed A4 sheet the fold is the vertical center.
+ * Ignore reading-order recto/verso: drive gutter / tear / mascot from slot side.
+ *   left slot  → outer=left, fold=right
+ *   right slot → outer=right, fold=left
+ */
+.sheet-slot-left .page-a5,
+.sheet-slot-left .page-a5.is-recto,
+.sheet-slot-left .page-a5.is-verso {
+  padding-left: 6mm !important;
+  padding-right: 11mm !important;
+}
+
+.sheet-slot-right .page-a5,
+.sheet-slot-right .page-a5.is-recto,
+.sheet-slot-right .page-a5.is-verso {
+  padding-left: 11mm !important;
+  padding-right: 6mm !important;
+}
+
+.sheet-slot-left .day-draw-mascot,
+.sheet-slot-left .page-a5.is-recto .day-draw-mascot,
+.sheet-slot-left .page-a5.is-verso .day-draw-mascot {
+  right: 0 !important;
+  left: auto !important;
+  object-position: bottom right !important;
+}
+
+.sheet-slot-right .day-draw-mascot,
+.sheet-slot-right .page-a5.is-recto .day-draw-mascot,
+.sheet-slot-right .page-a5.is-verso .day-draw-mascot {
+  left: 0 !important;
+  right: auto !important;
+  object-position: bottom left !important;
+}
+
+.sheet-slot-left .day-corner,
+.sheet-slot-left .page-a5.is-recto .day-corner,
+.sheet-slot-left .page-a5.is-verso .day-corner {
+  left: 4mm !important;
+  right: auto !important;
+}
+
+.sheet-slot-right .day-corner,
+.sheet-slot-right .page-a5.is-recto .day-corner,
+.sheet-slot-right .page-a5.is-verso .day-corner {
+  right: 4mm !important;
+  left: auto !important;
+}
+
+.sheet-slot-left .day-corner-fold::before,
+.sheet-slot-left .page-a5.is-recto .day-corner-fold::before,
+.sheet-slot-left .page-a5.is-verso .day-corner-fold::before {
+  content: "";
+  position: absolute;
+  right: 0;
+  left: auto;
+  bottom: 0;
+  width: 141.42%;
+  height: 0;
+  border-top: 1.3px dashed var(--ink);
+  transform: rotate(45deg);
+  transform-origin: right bottom;
+}
+
+.sheet-slot-right .day-corner-fold::before,
+.sheet-slot-right .page-a5.is-recto .day-corner-fold::before,
+.sheet-slot-right .page-a5.is-verso .day-corner-fold::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: auto;
+  bottom: 0;
+  width: 141.42%;
+  height: 0;
+  border-top: 1.3px dashed var(--ink);
+  transform: rotate(-45deg);
+  transform-origin: left bottom;
+}
+
+.sheet-slot-left .day-corner-fold::after,
+.sheet-slot-left .page-a5.is-recto .day-corner-fold::after,
+.sheet-slot-left .page-a5.is-verso .day-corner-fold::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: auto;
+  bottom: 0;
+  width: 5mm;
+  height: 5mm;
+  box-sizing: border-box;
+  background:
+    linear-gradient(
+      to top right,
+      transparent calc(50% - 0.35mm),
+      var(--ink) calc(50% - 0.35mm),
+      var(--ink) calc(50% + 0.35mm),
+      transparent calc(50% + 0.35mm)
+    );
+  border-left: 1.2px solid var(--ink);
+  border-right: none;
+  border-bottom: 1.2px solid var(--ink);
+}
+
+.sheet-slot-right .day-corner-fold::after,
+.sheet-slot-right .page-a5.is-recto .day-corner-fold::after,
+.sheet-slot-right .page-a5.is-verso .day-corner-fold::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  left: auto;
+  bottom: 0;
+  width: 5mm;
+  height: 5mm;
+  box-sizing: border-box;
+  background:
+    linear-gradient(
+      to top left,
+      transparent calc(50% - 0.35mm),
+      var(--ink) calc(50% - 0.35mm),
+      var(--ink) calc(50% + 0.35mm),
+      transparent calc(50% + 0.35mm)
+    );
+  border-right: 1.2px solid var(--ink);
+  border-left: none;
+  border-bottom: 1.2px solid var(--ink);
+}
+
+.sheet-slot-left .day-corner-scissors,
+.sheet-slot-left .page-a5.is-recto .day-corner-scissors,
+.sheet-slot-left .page-a5.is-verso .day-corner-scissors {
+  left: 50% !important;
+  right: auto !important;
+  bottom: 50% !important;
+  transform: translate(-50%, 50%) rotate(45deg) !important;
+}
+
+.sheet-slot-right .day-corner-scissors,
+.sheet-slot-right .page-a5.is-recto .day-corner-scissors,
+.sheet-slot-right .page-a5.is-verso .day-corner-scissors {
+  right: 50% !important;
+  left: auto !important;
+  bottom: 50% !important;
+  transform: translate(50%, 50%) rotate(-45deg) !important;
+}
+
+@media screen {
+  body {
+    background: #c8c8c8;
+    padding: 12px;
+    width: auto;
+  }
+  .sheet {
+    margin: 0 auto 16px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.25);
+  }
+}
