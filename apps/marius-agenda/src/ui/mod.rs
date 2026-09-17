@@ -2,6 +2,7 @@
 
 mod chrome;
 mod date_field;
+mod icons;
 mod generate;
 mod home;
 mod layout;
@@ -261,6 +262,9 @@ fn execute_gui_self_test(ui: &WizardUi, state: &Rc<RefCell<AppState>>) -> Result
 }
 
 fn build_ui(app: &adw::Application, state: Rc<RefCell<AppState>>) -> WizardUi {
+    let app_root = state.borrow().root.clone();
+    icons::register_app_icons(&app_root);
+
     let window = adw::ApplicationWindow::builder()
         .application(app)
         .title("Marius Agenda")
@@ -268,6 +272,7 @@ fn build_ui(app: &adw::Application, state: Rc<RefCell<AppState>>) -> WizardUi {
         .default_height(880)
         .build();
     window.set_size_request(760, 640);
+    icons::apply_window_icon(&window, &app_root);
 
     let header = adw::HeaderBar::new();
 
@@ -284,7 +289,7 @@ fn build_ui(app: &adw::Application, state: Rc<RefCell<AppState>>) -> WizardUi {
     save_menu_btn.set_menu_model(Some(&save_menu));
     header.pack_end(&save_menu_btn);
 
-    let main_menu_btn = chrome::main_menu_button(app, &window);
+    let main_menu_btn = chrome::main_menu_button(app, &window, &app_root);
     header.pack_end(&main_menu_btn);
 
     let app_stack = gtk::Stack::new();

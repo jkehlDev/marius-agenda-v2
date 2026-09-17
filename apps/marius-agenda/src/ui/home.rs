@@ -1,5 +1,6 @@
 //! Application home — new / open `.marius` project.
 
+use super::icons;
 use super::layout::trash_icon_button;
 use super::navigation::WizardUi;
 use super::session::{open_project, start_new_project};
@@ -118,7 +119,7 @@ pub fn build_home_page(
     status.set_description(Some(
         "Crée ou ouvre un projet d’agenda (.marius). Ton travail est enregistré dans un fichier unique à partager ou archiver.",
     ));
-    status.set_icon_name(Some("calendar-month-symbolic"));
+    icons::apply_status_page_icon(&status, &state.borrow().root);
 
     let actions = GtkBox::new(Orientation::Horizontal, 12);
     actions.set_halign(Align::Center);
