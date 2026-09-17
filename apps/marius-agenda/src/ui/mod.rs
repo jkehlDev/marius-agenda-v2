@@ -1,5 +1,6 @@
 //! GTK home + 5-step wizard.
 
+mod chrome;
 mod date_field;
 mod generate;
 mod home;
@@ -282,6 +283,9 @@ fn build_ui(app: &adw::Application, state: Rc<RefCell<AppState>>) -> WizardUi {
     save_menu_btn.set_tooltip_text(Some("Enregistrer le projet"));
     save_menu_btn.set_menu_model(Some(&save_menu));
     header.pack_end(&save_menu_btn);
+
+    let main_menu_btn = chrome::main_menu_button(app, &window);
+    header.pack_end(&main_menu_btn);
 
     let app_stack = gtk::Stack::new();
     app_stack.set_transition_type(gtk::StackTransitionType::Crossfade);
@@ -595,10 +599,10 @@ pub(crate) fn refresh_step_page(
         pill.set_sensitive(i <= step);
         pill.set_label(&format!("{}. {}", i + 1, step_short_label(i)));
         if i == step {
-            pill.add_css_class("suggested-action");
+            pill.add_css_class("marius-pill-current");
             pill.remove_css_class("flat");
         } else {
-            pill.remove_css_class("suggested-action");
+            pill.remove_css_class("marius-pill-current");
             pill.add_css_class("flat");
         }
     }

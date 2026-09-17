@@ -11,7 +11,7 @@ use std::sync::Mutex;
 
 pub fn message(window: &adw::ApplicationWindow, title: &str, body: &str) {
     let dlg = adw::MessageDialog::new(Some(window), Some(title), Some(body));
-    dlg.add_response("ok", "OK");
+    dlg.add_response("ok", "Fermer");
     dlg.connect_response(None::<&str>, |dialog, _| dialog.close());
     dlg.present();
 }
@@ -66,36 +66,28 @@ pub fn pdf_created_dialog(window: &adw::ApplicationWindow, pdf_path: &Path) {
         details.append(&dir_lbl);
     }
 
-    let actions = gtk::Box::new(gtk::Orientation::Horizontal, 8);
-    actions.add_css_class("marius-pdf-created-actions");
-    actions.set_halign(gtk::Align::Fill);
-    actions.set_homogeneous(false);
-    actions.set_margin_top(12);
-    let open_btn = gtk::Button::with_label("Ouvrir le PDF");
-    open_btn.add_css_class("suggested-action");
-    open_btn.set_hexpand(true);
-    let folder_btn = gtk::Button::with_label("Ouvrir le dossier");
-    folder_btn.set_hexpand(true);
-    let close_btn = gtk::Button::with_label("Fermer");
-    close_btn.set_hexpand(true);
-    details.append(&actions);
-    actions.append(&open_btn);
-    actions.append(&folder_btn);
-    actions.append(&close_btn);
-
     dlg.set_extra_child(Some(&details));
 
+    dlg.add_response("close", "Fermer");
+    dlg.add_response("folder", "Ouvrir le dossier");
+    dlg.add_response("open", "Ouvrir le PDF");
+    dlg.set_response_appearance("open", adw::ResponseAppearance::Suggested);
+    dlg.set_default_response(Some("open"));
+    dlg.set_close_response("close");
+
     let pdf_path = pdf_path.to_path_buf();
-    let pdf_path_open = pdf_path.clone();
-    let pdf_path_folder = pdf_path.clone();
-    open_btn.connect_clicked(move |_| launch_default_uri(&pdf_path_open));
-    folder_btn.connect_clicked(move |_| {
-        if let Some(dir) = pdf_path_folder.parent() {
-            launch_default_uri(dir);
+    dlg.connect_response(None::<&str>, move |dialog, response| {
+        match response {
+            "open" => launch_default_uri(&pdf_path),
+            "folder" => {
+                if let Some(dir) = pdf_path.parent() {
+                    launch_default_uri(dir);
+                }
+            }
+            _ => {}
         }
+        dialog.close();
     });
-    let dlg_close = dlg.clone();
-    close_btn.connect_clicked(move |_| dlg_close.close());
     dlg.present();
 }
 

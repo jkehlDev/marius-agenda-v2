@@ -29,7 +29,7 @@ gtk = ["dep:gtk", "dep:libadwaita", "dep:agenda-images"]
 package = "gtk4"
 version = "0.9"
 optional = true
-features = ["v4_10"]
+features = ["v4_10", "v4_14"]
 
 [dependencies.agenda-images]
 path = "../../crates/agenda-images"

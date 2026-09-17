@@ -8,6 +8,7 @@ use super::util::{confirm_destructive, message};
 use agenda_core::{delete_project_archive, load_recent_projects};
 use gtk::prelude::*;
 use gtk::{Align, Box as GtkBox, Label, Orientation, ScrolledWindow};
+use libadwaita as adw;
 use std::cell::RefCell;
 use std::rc::Rc;
 
@@ -105,38 +106,35 @@ pub fn build_home_page(
     recent_box: &GtkBox,
 ) -> GtkBox {
     let page = GtkBox::new(Orientation::Vertical, 20);
-    page.set_margin_top(32);
+    page.set_margin_top(16);
     page.set_margin_bottom(32);
     page.set_margin_start(24);
     page.set_margin_end(24);
     page.add_css_class("marius-home");
+    page.set_vexpand(true);
 
-    let title = Label::new(Some("Marius Agenda"));
-    title.add_css_class("title-1");
-    title.set_halign(Align::Start);
-    page.append(&title);
-
-    let lede = Label::new(Some(
+    let status = adw::StatusPage::new();
+    status.set_title("Marius Agenda");
+    status.set_description(Some(
         "Crée ou ouvre un projet d’agenda (.marius). Ton travail est enregistré dans un fichier unique à partager ou archiver.",
     ));
-    lede.set_wrap(true);
-    lede.add_css_class("dim-label");
-    lede.set_halign(Align::Start);
-    page.append(&lede);
+    status.set_icon_name(Some("calendar-month-symbolic"));
 
     let actions = GtkBox::new(Orientation::Horizontal, 12);
+    actions.set_halign(Align::Center);
     actions.set_margin_top(8);
     let new_btn = gtk::Button::with_label("Nouveau projet");
     new_btn.add_css_class("suggested-action");
     let open_btn = gtk::Button::with_label("Ouvrir un projet…");
     actions.append(&new_btn);
     actions.append(&open_btn);
-    page.append(&actions);
+    status.set_child(Some(&actions));
+    page.append(&status);
 
     let recent_title = Label::new(Some("Projets récents"));
     recent_title.add_css_class("heading");
     recent_title.set_halign(Align::Start);
-    recent_title.set_margin_top(16);
+    recent_title.set_margin_top(8);
     page.append(&recent_title);
 
     refresh_recent_list(recent_box, state, ui);

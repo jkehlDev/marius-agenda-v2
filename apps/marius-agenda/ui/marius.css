@@ -9,9 +9,15 @@
 }
 
 .marius-illu-preview {
-  background-color: #ffffff;
+  background-color: @card_bg_color;
   border-radius: 8px;
   padding: 6px;
+}
+
+.marius-pill-current {
+  background-color: alpha(@accent_color, 0.18);
+  color: @accent_color;
+  box-shadow: inset 0 0 0 1px alpha(@accent_color, 0.55);
 }
 
 .marius-illu-preview image {
