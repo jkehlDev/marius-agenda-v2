@@ -5,7 +5,7 @@ title: Marius Agenda
 icon: packaging/icons/marius-agenda-256.png
 base: core24
 # Keep in sync with [workspace.package] version in root Cargo.toml
-version: '0.1.0'
+version: '0.1.1'
 summary: Générateur d'agenda scolaire en PDF prêt à imprimer (page à page ou livret)
 description: |
   Marius Agenda aide à préparer un agenda scolaire personnalisé, prêt à imprimer

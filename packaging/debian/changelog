@@ -1,3 +1,10 @@
+marius-agenda (0.1.1-1) unstable; urgency=medium
+
+  * UI GNOME/Adwaita : menu principal, À propos, raccourcis clavier, accueil
+    StatusPage, icônes application (dev + paquet).
+
+ -- jkehlDev  Thu, 17 Sep 2026 14:30:00 +0200
+
 marius-agenda (0.1.0-8) unstable; urgency=medium
 
   * Icône livre magique épurée, fond ardoise sobre (coins transparents).

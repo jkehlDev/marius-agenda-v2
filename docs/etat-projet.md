@@ -1,6 +1,6 @@
 # Marius Agenda — état du projet
 
-Synthèse interne (sept. 2026, tag **v0.1.0**). Détails techniques agents : `docs/agent-work.md`. Roadmap publique : `README.md`.
+Synthèse interne (sept. 2026, tag **v0.1.1**). Détails techniques agents : `docs/agent-work.md`. Roadmap publique : `README.md`.
 
 ## Légende maturité
 

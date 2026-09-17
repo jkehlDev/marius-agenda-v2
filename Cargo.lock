@@ -10,7 +10,7 @@ checksum = "320119579fcad9c21884f5c4861d16174d0e06250625266f50fe6898340abefa"
 
 [[package]]
 name = "agenda-core"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "serde",
  "serde_json",
@@ -21,7 +21,7 @@ dependencies = [
 
 [[package]]
 name = "agenda-images"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "agenda-core",
  "image",
@@ -30,7 +30,7 @@ dependencies = [
 
 [[package]]
 name = "agenda-pdf"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "gtk4",
  "tempfile",
@@ -40,7 +40,7 @@ dependencies = [
 
 [[package]]
 name = "agenda-pipeline"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "agenda-core",
  "agenda-images",
@@ -53,7 +53,7 @@ dependencies = [
 
 [[package]]
 name = "agenda-render"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "agenda-core",
  "base64",
@@ -792,7 +792,7 @@ checksum = "f9f8bd3e56ce4dfc153cf470fffbfa98c7620958b312ca5c3a4b8d5181fd13c6"
 
 [[package]]
 name = "marius-agenda"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "agenda-core",
  "agenda-images",
