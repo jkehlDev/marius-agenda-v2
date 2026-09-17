@@ -11,7 +11,7 @@ pub const CONTENT_MAX_WIDTH: i32 = 880;
 pub fn load_app_css() {
     let provider = gtk::CssProvider::new();
     let css = include_str!("../../ui/marius.css");
-    provider.load_from_data(css);
+    provider.load_from_string(css);
     gtk::style_context_add_provider_for_display(
         &gtk::gdk::Display::default().expect("display"),
         &provider,
