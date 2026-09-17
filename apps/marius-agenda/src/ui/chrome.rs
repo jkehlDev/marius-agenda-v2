@@ -68,19 +68,18 @@ fn build_shortcuts_window(parent: &adw::ApplicationWindow) -> gtk::ShortcutsWind
 
 pub fn present_about(parent: &adw::ApplicationWindow, app_root: &Path) {
     icons::register_app_icons(app_root);
-    let about = adw::AboutWindow::new();
+    let about = adw::AboutWindow::builder()
+        .application_name("Marius Agenda")
+        .application_icon(icons::icon_name_for_about())
+        .version(env!("CARGO_PKG_VERSION"))
+        .copyright("Copyright © 2026 jkehlDev")
+        .license_type(gtk::License::Gpl30)
+        .developers(["jkehlDev"])
+        .website("https://github.com/jkehlDev/marius-agenda-v2")
+        .issue_url("https://github.com/jkehlDev/marius-agenda-v2/issues")
+        .comments("Générateur d’agenda scolaire en PDF (page à page ou livret imposé).")
+        .build();
     about.set_transient_for(Some(parent));
     about.set_modal(true);
-    about.set_application_name("Marius Agenda");
-    about.set_application_icon(icons::icon_name_for_about());
-    about.set_version(env!("CARGO_PKG_VERSION"));
-    about.set_copyright("Copyright © 2026 jkehlDev");
-    about.set_license_type(gtk::License::Gpl30);
-    about.set_developers(&["jkehlDev"]);
-    about.set_website("https://github.com/jkehlDev/marius-agenda-v2");
-    about.set_issue_url("https://github.com/jkehlDev/marius-agenda-v2/issues");
-    about.set_comments(
-        "Générateur d’agenda scolaire en PDF (page à page ou livret imposé).",
-    );
     about.present();
 }
