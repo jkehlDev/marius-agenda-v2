@@ -1,3 +1,10 @@
+marius-agenda (0.1.2-1) unstable; urgency=medium
+
+  * Contacts : nom + numéro national (étape année, page vacances PDF).
+  * Génération PDF : confirmation avant remplacement d’un fichier existant.
+
+ -- jkehlDev  Thu, 17 Sep 2026 15:15:00 +0200
+
 marius-agenda (0.1.1-1) unstable; urgency=medium
 
   * UI GNOME/Adwaita : menu principal, À propos, raccourcis clavier, accueil

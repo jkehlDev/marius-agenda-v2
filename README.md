@@ -66,7 +66,7 @@ Paquet `.deb` (après `cargo install cargo-deb`) :
 
 ```bash
 ./scripts/package-deb.sh
-# → target/debian/marius-agenda_0.1.1-1_amd64.deb
+# → target/debian/marius-agenda_0.1.2-1_amd64.deb
 sudo apt install ./target/debian/marius-agenda_*_amd64.deb
 ./scripts/verify-deb.sh   # optionnel, VM / machine propre
 ```
@@ -76,7 +76,7 @@ Snap (build + test hors store) :
 ```bash
 sudo snap install snapcraft --classic   # une fois
 ./scripts/package-snap.sh
-# → marius-agenda_0.1.1_amd64.snap
+# → marius-agenda_0.1.2_amd64.snap
 sudo snap install --dangerous ./marius-agenda_*.snap
 ./scripts/verify-snap.sh   # optionnel
 ```
