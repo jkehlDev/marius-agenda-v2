@@ -72,6 +72,8 @@ Audience: **AI agents** maintaining this repo. Not user-facing docs.
 | GtkFileDialog déjà pour images | done | pre-existing |
 | Polish graphique wizard (clamp, grilles, previews) | done | `ui/layout.rs`, `ui/marius.css`, `--gui-screenshot-tour` |
 | HIG lot A (menu, About, shortcuts, StatusPage, pills CSS) | done | `ui/chrome.rs`, `ui/icons.rs` |
+| Contacts (nom + tél FR, PDF vacances, max 10) | done | `config/contacts.rs`, `phone.rs`, `ui/phone_field.rs` ; JSON `contacts` / legacy `contactPhones` |
+| Confirmation écrasement PDF | done | `existing_pdf_overwrites`, `confirm_overwrite_pdfs` dans `ui/generate.rs` |
 | Packaging VM propre `dpkg -i` | in progress | `package-deb.sh`, `verify-deb.sh`, deps WebKit explicites ; `.desktop` `%f` + MIME `.marius` |
 | Snap Store | in progress | `core24` + `gnome` + `webkitgtk-6-gnome-2404` ; WebKit PDF : `WEBKIT_DISABLE_DMABUF_RENDERER` + `GSK_RENDERER=cairo` ; `summary`/`description` = listing store |
 | README utilisateur dans paquet | done | `packaging/debian/README.Debian` |

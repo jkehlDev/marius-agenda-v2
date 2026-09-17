@@ -732,6 +732,26 @@ html, body {
   color: var(--ink);
 }
 
+.vacations-contacts {
+  margin-top: 4mm;
+  flex-shrink: 0;
+}
+
+.vacations-contacts h2 {
+  margin: 0 0 2mm;
+  font-family: var(--font-script);
+  font-size: 14pt;
+  font-weight: 400;
+}
+
+.vacations-contacts-list {
+  margin: 0;
+  padding-left: 5mm;
+  font-size: 8.5pt;
+  line-height: 1.35;
+  color: var(--ink);
+}
+
 .vacations .note {
   margin-top: auto;
   font-size: 7.5pt;

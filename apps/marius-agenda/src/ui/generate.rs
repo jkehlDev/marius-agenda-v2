@@ -4,9 +4,10 @@ use super::state::AppState;
 use super::util;
 use agenda_core::{OutputDirIssue, resolve_output_dir_for_generate, output_dir_issue_message};
 use agenda_pipeline::{
-    export_prepared_pdf_generation, prepare_pdf_generation, GenerateError, GenerateOptions,
-    GenerateResult,
+    existing_pdf_overwrites, export_prepared_pdf_generation, prepare_pdf_generation, GenerateError,
+    GenerateOptions, GenerateResult,
 };
+use std::path::PathBuf;
 use gtk::glib;
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -31,7 +32,7 @@ pub fn generate_period(
     let root = state.borrow().root.clone();
     let out_cfg = state.borrow().config.output_dir.clone();
     match resolve_output_dir_for_generate(&root, &out_cfg) {
-        Ok(_) => run_generation(ui, state, period_id, period_label),
+        Ok(dir) => start_generation_after_checks(ui, state, period_id, period_label, dir),
         Err(OutputDirIssue::NotChosen) => {
             prompt_output_folder(ui, state, period_id, period_label, &out_cfg);
         }
@@ -77,9 +78,35 @@ fn prompt_output_folder(
                     return;
                 }
                 super::refresh_step_page(&ui, &state, true);
-                run_generation(&ui, &state, &period_id, &period_label);
+                start_generation_after_checks(&ui, &state, &period_id, &period_label, picked);
             }
         }
+    });
+}
+
+fn start_generation_after_checks(
+    ui: &WizardUi,
+    state: &Rc<RefCell<AppState>>,
+    period_id: &str,
+    period_label: &str,
+    pdf_dir: PathBuf,
+) {
+    let period_ids = vec![period_id.to_string()];
+    let existing = {
+        let config = state.borrow().config.clone();
+        existing_pdf_overwrites(&config, &pdf_dir, &period_ids)
+    };
+    if existing.is_empty() {
+        run_generation(ui, state, period_id, period_label);
+        return;
+    }
+    let window = ui.window.clone();
+    let ui = ui.clone_handles();
+    let state = state.clone();
+    let period_id = period_id.to_string();
+    let period_label = period_label.to_string();
+    util::confirm_overwrite_pdfs(&window, &existing, move || {
+        run_generation(&ui, &state, &period_id, &period_label);
     });
 }
 

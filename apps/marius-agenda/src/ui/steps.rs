@@ -9,9 +9,10 @@ use super::layout::{
 use super::navigation::WizardUi;
 use super::state::{apply_step_sync, edit_state_then, AppState};
 use super::util::{confirm_destructive, on_click_refresh, pick_image_file, pick_output_folder};
+use super::phone_field::{attach_fr_phone_entry, phone_entry_text};
 use agenda_core::{
-    empty_slot, list_school_periods, AgendaConfig, BookletDuplexPass,
-    HolidayPeriod, IllustrationSlot, weekday_label_fr, WEEKDAY_ORDER,
+    empty_contact, empty_slot, list_school_periods, AgendaConfig, AgendaContact, BookletDuplexPass,
+    HolidayPeriod, IllustrationSlot, MAX_CONTACT_PHONES, weekday_label_fr, WEEKDAY_ORDER,
 };
 use agenda_images::{import_illustration_file, IllustrationSlotId};
 use gtk::prelude::*;
@@ -40,7 +41,7 @@ pub fn fill_step(
     state.borrow().set_sync(None);
     let config = state.borrow().config.clone();
     match step {
-        0 => fill_year(page, hint, &config, state),
+        0 => fill_year(page, hint, &config, state, ui),
         1 => fill_holidays(page, hint, state, ui),
         2 => fill_weekdays(page, hint, state),
         3 => fill_illustrations(page, hint, state, ui),
@@ -49,10 +50,18 @@ pub fn fill_step(
     }
 }
 
-fn fill_year(page: &GtkBox, hint: &Label, config: &AgendaConfig, state: &Rc<RefCell<AppState>>) {
-    hint.set_text("Renseigne le titre, le libellé d’année, puis les dates de rentrée et de fin des cours.");
+fn fill_year(
+    page: &GtkBox,
+    hint: &Label,
+    config: &AgendaConfig,
+    state: &Rc<RefCell<AppState>>,
+    ui: &WizardUi,
+) {
+    hint.set_text(
+        "Renseigne le titre, l’année scolaire, les dates clés et les contacts à afficher en fin d’agenda.",
+    );
     page.append(hint);
-    page.append(&req_legend("Tous les champs sont obligatoires."));
+    page.append(&req_legend("Les champs généraux sont obligatoires. Les contacts sont optionnels."));
 
     let card = step_card(page);
     let grid = two_column_grid(&card);
@@ -61,11 +70,68 @@ fn fill_year(page: &GtkBox, hint: &Label, config: &AgendaConfig, state: &Rc<RefC
     let rentree = grid_date_field(&grid, 0, 1, "Rentrée", &config.rentree);
     let fin = grid_date_field(&grid, 1, 1, "Fin des cours", &config.fin_des_cours);
 
+    page.append(&section_heading(
+        "Contacts",
+        "Nom et numéro national obligatoires pour chaque contact (10 chiffres, sans indicatif) — maximum 10.",
+    ));
+    let contacts_card = step_card(page);
+    let contacts_box = GtkBox::new(Orientation::Vertical, 8);
+    contacts_card.append(&contacts_box);
+
+    let initial: Vec<AgendaContact> = if config.contacts.is_empty() {
+        vec![empty_contact()]
+    } else {
+        config.contacts.clone()
+    };
+    let mut contact_rows: Vec<(Entry, Entry)> = Vec::new();
+    for contact in initial.iter().take(MAX_CONTACT_PHONES) {
+        let row = GtkBox::new(Orientation::Horizontal, 8);
+        let name = Entry::new();
+        name.set_text(&contact.name);
+        name.set_placeholder_text(Some("Nom (obligatoire)"));
+        name.set_width_chars(18);
+        name.set_hexpand(true);
+        let phone = Entry::new();
+        phone.set_text(&contact.phone);
+        attach_fr_phone_entry(&phone);
+        phone.set_hexpand(true);
+        row.append(&name);
+        row.append(&phone);
+        contacts_box.append(&row);
+        contact_rows.push((name, phone));
+    }
+
+    let add = gtk::Button::with_label("+ Ajouter un contact");
+    add.set_halign(gtk::Align::Start);
+    add.set_sensitive(contact_rows.len() < MAX_CONTACT_PHONES);
+    add.connect_clicked(on_click_refresh(state, ui, |state| {
+        apply_step_sync(state);
+        let mut s = state.borrow_mut();
+        let row_count = if s.config.contacts.is_empty() {
+            1
+        } else {
+            s.config.contacts.len()
+        };
+        if row_count < MAX_CONTACT_PHONES {
+            s.config.contacts.push(empty_contact());
+        }
+        s.mark_project_dirty();
+    }));
+    contacts_card.append(&add);
+
     state.borrow().set_sync(Some(Box::new(move |cfg: &mut AgendaConfig| {
         cfg.title = title.text().to_string();
         cfg.school_year_label = year.text().to_string();
         cfg.rentree = rentree.text();
         cfg.fin_des_cours = fin.text();
+        cfg.contacts = contact_rows
+            .iter()
+            .map(|(name, phone)| AgendaContact {
+                name: name.text().to_string(),
+                phone: phone_entry_text(phone),
+            })
+            .take(MAX_CONTACT_PHONES)
+            .collect();
     })));
 }
 

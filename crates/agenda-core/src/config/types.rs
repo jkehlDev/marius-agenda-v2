@@ -100,6 +100,11 @@ pub struct BookletOptions {
     pub duplex_pass: BookletDuplexPass,
 }
 
+use super::contacts::{deserialize_contacts_field, AgendaContact};
+
+/// Contacts printed below the vacations table (last page), max [`MAX_CONTACT_PHONES`].
+pub const MAX_CONTACT_PHONES: usize = 10;
+
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct AgendaConfig {
@@ -108,6 +113,13 @@ pub struct AgendaConfig {
     pub school_year_label: String,
     pub rentree: IsoDate,
     pub fin_des_cours: IsoDate,
+    #[serde(
+        default,
+        rename = "contacts",
+        alias = "contactPhones",
+        deserialize_with = "deserialize_contacts_field"
+    )]
+    pub contacts: Vec<AgendaContact>,
     pub holidays: Vec<HolidayPeriod>,
     pub school_days: SchoolDaysMap,
     pub illustrations: AgendaIllustrations,
@@ -126,5 +138,57 @@ pub fn slot(source_path: Option<String>, print_path: Option<String>) -> Illustra
     IllustrationSlot {
         source_path,
         print_path,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn config_json_without_contacts_defaults_empty() {
+        let json = r#"{
+            "version": 1,
+            "title": "Agenda",
+            "schoolYearLabel": "2026-2027",
+            "rentree": "2026-09-01",
+            "finDesCours": "2027-07-03",
+            "holidays": [],
+            "schoolDays": {"1": true},
+            "illustrations": {
+                "cover": {},
+                "activities": {},
+                "byWeekday": {}
+            },
+            "booklet": { "generateImposedPdf": false, "duplexPass": "both" },
+            "outputDir": ""
+        }"#;
+        let cfg: AgendaConfig = serde_json::from_str(json).expect("parse");
+        assert!(cfg.contacts.is_empty());
+    }
+
+    #[test]
+    fn config_json_legacy_contact_phones_array() {
+        let json = r#"{
+            "version": 1,
+            "title": "Agenda",
+            "schoolYearLabel": "2026-2027",
+            "rentree": "2026-09-01",
+            "finDesCours": "2027-07-03",
+            "contactPhones": ["0611223344", "01 23 45 67 89"],
+            "holidays": [],
+            "schoolDays": {"1": true},
+            "illustrations": {
+                "cover": {},
+                "activities": {},
+                "byWeekday": {}
+            },
+            "booklet": { "generateImposedPdf": false, "duplexPass": "both" },
+            "outputDir": ""
+        }"#;
+        let cfg: AgendaConfig = serde_json::from_str(json).expect("parse");
+        assert_eq!(cfg.contacts.len(), 2);
+        assert_eq!(cfg.contacts[0].phone, "06 11 22 33 44");
+        assert_eq!(cfg.contacts[1].phone, "01 23 45 67 89");
     }
 }

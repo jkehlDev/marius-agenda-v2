@@ -56,6 +56,7 @@ pub fn create_default_config() -> AgendaConfig {
         school_year_label: "2026-2027".into(),
         rentree: "2026-09-01".into(),
         fin_des_cours: "2027-07-03".into(),
+        contacts: Vec::new(),
         holidays: vec![
             HolidayPeriod {
                 id: "toussaint".into(),

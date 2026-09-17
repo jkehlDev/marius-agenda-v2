@@ -16,8 +16,11 @@ pub use calendar::{
     to_iso_date, weekday_name_fr, SchoolDay, SchoolPeriod,
 };
 pub use config::{
-    AgendaConfig, AgendaIllustrations, BookletDuplexPass, BookletOptions, HolidayPeriod, IllustrationSlot,
-    IsoDate, SchoolDaysMap, WeekdayIndex, empty_slot, slot,
+    AgendaConfig, AgendaContact, AgendaIllustrations, BookletDuplexPass, BookletOptions, HolidayPeriod,
+    IllustrationSlot, IsoDate, MAX_CONTACT_PHONES, SchoolDaysMap, WeekdayIndex, contact_row_has_content,
+    empty_contact, empty_slot, format_fr_phone_display, format_fr_phone_live, is_incomplete_fr_phone,
+    is_valid_fr_national_phone, normalize_contact, normalized_contacts, phone_digits, slot,
+    validate_contacts,
 };
 pub use defaults::{
     create_blank_project_config, create_default_config, weekday_label_fr, WEEKDAY_LABELS_FR,

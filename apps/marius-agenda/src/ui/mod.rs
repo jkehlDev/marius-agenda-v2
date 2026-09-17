@@ -2,6 +2,7 @@
 
 mod chrome;
 mod date_field;
+mod phone_field;
 mod icons;
 mod generate;
 mod home;

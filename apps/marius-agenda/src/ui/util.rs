@@ -123,6 +123,53 @@ pub fn confirm_missing_output_dir(
     dlg.present();
 }
 
+pub fn confirm_overwrite_pdfs(
+    window: &adw::ApplicationWindow,
+    existing_paths: &[PathBuf],
+    on_confirm: impl FnOnce() + 'static,
+) {
+    let list = existing_paths
+        .iter()
+        .map(|p| {
+            p.file_name()
+                .map(|n| n.to_string_lossy().to_string())
+                .unwrap_or_else(|| p.display().to_string())
+        })
+        .collect::<Vec<_>>()
+        .join("\n");
+    let body = if existing_paths.len() == 1 {
+        format!(
+            "Un fichier PDF existe déjà et sera remplacé :\n\n{}\n\nContinuer ?",
+            list
+        )
+    } else {
+        format!(
+            "Ces fichiers PDF existent déjà et seront remplacés :\n\n{}\n\nContinuer ?",
+            list
+        )
+    };
+    let dlg = adw::MessageDialog::new(
+        Some(window),
+        Some("Remplacer le PDF existant ?"),
+        Some(&body),
+    );
+    dlg.add_response("cancel", "Annuler");
+    dlg.add_response("replace", "Remplacer");
+    dlg.set_response_appearance("replace", adw::ResponseAppearance::Destructive);
+    dlg.set_default_response(Some("cancel"));
+    dlg.set_close_response("cancel");
+    let on_confirm = Mutex::new(Some(on_confirm));
+    dlg.connect_response(None::<&str>, move |dialog, response| {
+        if response == "replace" {
+            if let Some(f) = on_confirm.lock().unwrap().take() {
+                f();
+            }
+        }
+        dialog.close();
+    });
+    dlg.present();
+}
+
 pub fn confirm_destructive(
     window: &adw::ApplicationWindow,
     title: &str,

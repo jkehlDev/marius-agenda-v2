@@ -291,6 +291,38 @@ fn fmt_long(iso: &str) -> String {
     .unwrap_or_default()
 }
 
+fn vacations_contacts_html(config: &AgendaConfig) -> String {
+    use agenda_core::normalized_contacts;
+    let contacts = normalized_contacts(&config.contacts);
+    if contacts.is_empty() {
+        return String::new();
+    }
+    let items = contacts
+        .iter()
+        .map(|c| {
+            let line = if c.name.is_empty() {
+                escape_html(&c.phone)
+            } else if c.phone.is_empty() {
+                escape_html(&c.name)
+            } else {
+                format!(
+                    "{} — {}",
+                    escape_html(&c.name),
+                    escape_html(&c.phone)
+                )
+            };
+            format!("<li>{line}</li>")
+        })
+        .collect::<Vec<_>>()
+        .join("");
+    format!(
+        r#"<div class="vacations-contacts">
+      <h2>Contacts</h2>
+      <ul class="vacations-contacts-list">{items}</ul>
+    </div>"#
+    )
+}
+
 fn vacations_page(config: &AgendaConfig) -> String {
     let rows = config
         .holidays
@@ -307,6 +339,7 @@ fn vacations_page(config: &AgendaConfig) -> String {
         })
         .collect::<Vec<_>>()
         .join("");
+    let contacts = vacations_contacts_html(config);
 
     format!(
         r#"<section class="page page-a5 vacations">
@@ -320,6 +353,7 @@ fn vacations_page(config: &AgendaConfig) -> String {
         <tr><td>Fin des cours</td><td>{}</td></tr>
       </tbody>
     </table>
+    {contacts}
   </section>"#,
         escape_html(&config.school_year_label),
         fmt_long(&config.rentree),

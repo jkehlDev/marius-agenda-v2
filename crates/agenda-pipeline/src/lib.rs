@@ -46,6 +46,35 @@ pub struct PreparedPdfGeneration {
     pdf_dir: PathBuf,
 }
 
+/// Basename of the PDF that would be written for this period (GUI overwrite check).
+pub fn period_pdf_filename(period: &SchoolPeriod, config: &AgendaConfig) -> String {
+    let base = period_filename(period);
+    if config.booklet.generate_imposed_pdf {
+        let suffix = match config.booklet.duplex_pass {
+            BookletDuplexPass::Odd => ".livret-impair",
+            BookletDuplexPass::Even => ".livret-pair",
+            BookletDuplexPass::Both => ".livret",
+        };
+        format!("{}{}.pdf", base, suffix)
+    } else {
+        format!("{}.pdf", base)
+    }
+}
+
+/// Existing PDF paths under `pdf_dir` that would be replaced for the given period ids.
+pub fn existing_pdf_overwrites(
+    config: &AgendaConfig,
+    pdf_dir: &Path,
+    period_ids: &[String],
+) -> Vec<PathBuf> {
+    list_school_periods(config)
+        .into_iter()
+        .filter(|p| period_ids.contains(&p.id))
+        .map(|p| pdf_dir.join(period_pdf_filename(&p, config)))
+        .filter(|path| path.is_file())
+        .collect()
+}
+
 fn render_period(period: &SchoolPeriod, root: &Path, config: &AgendaConfig) -> (String, String) {
     let ctx = RenderContext {
         root,

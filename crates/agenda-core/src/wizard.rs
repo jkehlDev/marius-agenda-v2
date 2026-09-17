@@ -1,7 +1,9 @@
 //! Wizard step validation (`validate_wizard_step`).
 
 use crate::calendar::parse_iso_date;
-use crate::config::AgendaConfig;
+use crate::config::{
+    AgendaConfig, MAX_CONTACT_PHONES, contact_row_has_content, validate_contacts,
+};
 use crate::defaults::WEEKDAY_ORDER;
 use crate::paths::resolve_data_dir;
 use std::fs;
@@ -41,6 +43,17 @@ pub fn validate_wizard_step(step: usize, config: &AgendaConfig) -> Vec<String> {
         {
             errors.push("La fin des cours doit être après la rentrée.".into());
         }
+        let filled_contacts = config
+            .contacts
+            .iter()
+            .filter(|c| contact_row_has_content(c))
+            .count();
+        if filled_contacts > MAX_CONTACT_PHONES {
+            errors.push(format!(
+                "Maximum {MAX_CONTACT_PHONES} contacts."
+            ));
+        }
+        errors.extend(validate_contacts(&config.contacts));
     }
 
     if step == 1 {
@@ -132,6 +145,24 @@ mod tests {
     fn step0_rejects_empty_title() {
         let mut config = create_default_config();
         config.title = "   ".into();
+        assert!(!can_advance_wizard_step(0, &config));
+    }
+
+    #[test]
+    fn step0_allows_up_to_ten_contacts() {
+        use crate::config::AgendaContact;
+        let mut config = create_default_config();
+        config.contacts = (1..=10)
+            .map(|i| AgendaContact {
+                name: format!("Contact {i}"),
+                phone: format!("06 00 00 00 {i:02}"),
+            })
+            .collect();
+        assert!(can_advance_wizard_step(0, &config));
+        config.contacts.push(AgendaContact {
+            name: "Onze".into(),
+            phone: "06 00 00 00 99".into(),
+        });
         assert!(!can_advance_wizard_step(0, &config));
     }
 
